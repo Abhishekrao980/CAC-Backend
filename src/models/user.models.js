@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema(
     watchHistroy: [
       {
         type: Schema.Types.ObjectId,
-        Ref: "Video",
+        ref: "Video",
       },
     ],
     password: {
@@ -56,7 +56,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.isPasswordCorrect = async function (passoword) {
+userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
