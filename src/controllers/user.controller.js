@@ -5,10 +5,6 @@ import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser = asyncHandler(async (req, res) => {
-  res.status(200).json({
-    message: "ok",
-  });
-
   const { username, fullName, email, password } = req.body;
   console.log("email:", email);
 
@@ -18,7 +14,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are requried");
   }
 
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -49,7 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
     username: username.toLowerCase(),
   });
 
-  const createdUser = await User.findById(user, _id).select(
+  const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
 
@@ -59,7 +55,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(200), createdUser, "User Registered Successfully");
+    .json(new ApiResponse(200, createdUser, "User Registered Successfully"));
 });
 
 export { registerUser };
